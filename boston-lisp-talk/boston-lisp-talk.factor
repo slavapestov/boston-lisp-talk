@@ -13,7 +13,6 @@ CONSTANT: boston-lisp-slides
         "Influenced by Forth, Lisp, C++, Smalltalk"
         "Terminology mostly from Forth and Joy"
         "Blurs the line between language and library"
-        "Interactive development"
     }
 
     { $slide "Part 1 - language overview"
@@ -189,13 +188,13 @@ CONSTANT: boston-lisp-slides
         { $vocab-link "acme.frobnicate" }
     }
     { $slide "Compiler errors"
-        { "First vocabulary defines a word:" { $vocab-link "acme.widgets.supply" } }
-        { "Second vocabulary uses above word:" { $vocab-link "acme.widgets.factory" } }
+        { "First vocabulary defines a word: " { $vocab-link "acme.widgets.supply" } }
+        { "Second vocabulary uses above word: " { $vocab-link "acme.widgets.factory" } }
         { "If I add or a parameter, the compiler tells me to update code" }
     }
     { $slide "Inlining and recompilation"
-        { "First vocabulary with a couple of constants:" { $vocab-link "planet.earth.constants" } }
-        { "Second vocabulary uses these constants:" { $vocab-link "planet.earth.physics" } }
+        { "First vocabulary with a couple of constants: " { $vocab-link "planet.earth.constants" } }
+        { "Second vocabulary uses these constants: " { $vocab-link "planet.earth.physics" } }
         {
             "Constant folding across source file boundaries!"
             { $code "\\ earth-density ssa." }
@@ -213,7 +212,15 @@ CONSTANT: boston-lisp-slides
                 "    365 >>year-length"
             }
         }
+    }
+    { $slide "Tuple reshaping"
         { "Adding, re-arranging, removing slots updates instances" }
+        { "How does it work?"
+            { $list
+                "Objects are not hashtables; slot access is very fast"
+                "Redefinition walks the heap; expensive but rare"
+            }
+        }
     }
 
     { $slide "Part 3 - meta-programming"
@@ -232,12 +239,9 @@ CONSTANT: boston-lisp-slides
         { "New words are defined with " { $link POSTPONE: : } }
         "This is “just” a library word"
         "Only real syntax is whitespace-separated words and numbers"
-        { "Parsing word example:" { $link POSTPONE: DICE: } }
-        { "Usage:"
-            { $code
-                "USE: dice.examples"
-                "standard-dice-roll ."
-            }
+        { "Parsing word example: " { $link POSTPONE: DICE: } }
+        { "Usage example:"
+            { $code "standard-dice-roll ." }
         }
         { "Demonstrates extensibility of " { $link see } }
     }
@@ -259,10 +263,10 @@ CONSTANT: boston-lisp-slides
     }
 
     { $slide "Parsing and printing"
-        { "Parsing s-expressions with PEGs:"
+        { "Parsing s-expressions with PEGs: "
             { $vocab-link "s-exp.parser" }
         }
-        { "Converting s-expressions to XML with XML literals:"
+        { "Converting s-expressions to XML with XML literals: "
             { $vocab-link "s-exp.to-xml" }
         }
         { "Example:"
@@ -291,12 +295,19 @@ CONSTANT: boston-lisp-slides
         "Cocoa, Fortran, COM FFIs are built on top"
     }
 
-    { $slide "Specialized arrays"
-        
-    }
-
-    { $slide "SIMD"
-        
+    { $slide "Specialized arrays and SIMD"
+        { "Polymorphic arrays and generic arithmetic is inefficient"
+            { $code "\\ convert-image ssa." }
+            { $code "benchmark-1" }
+        }
+        { "Compiler generates efficient code for specialized arrays"
+            { $code "\\ convert-image-specialized ssa." }
+            { $code "benchmark-2" }
+        }
+        { "Explicit SIMD is even faster"
+            { $code "\\ convert-image-simd ssa." }
+            { $code "benchmark-3" }
+        }
     }
 
     { $slide "Part 5 - the implementation"
@@ -331,18 +342,6 @@ CONSTANT: boston-lisp-slides
         "Optimizes loads/stores (alias analysis)"
         "Optimizes computations (value numbering)"
     }
-    { $slide "The core library"
-        "Core library, ~9,000 lines of Factor"
-        "Source parser, arrays, strings, math, hashtables, basic I/O, ..."
-        "Packaged into boot image because VM doesn't have a parser"
-        { $code "\"x86.32\" make-image" }
-    }
-    { $slide "The basis library"
-        "Basis library, ~80,000 lines of Factor"
-        "Bootstrap process loads code from basis, runs compiler, saves image"
-        "Loaded by default: optimizing compiler, tools, help system, UI, ..."
-        "Optional: HTTP server, XML, database access, ..."
-    }
     { $slide "Project infrastructure"
         { $url "http://factorcode.org" }
         { $url "http://concatenative.org" }
@@ -355,7 +354,6 @@ CONSTANT: boston-lisp-slides
         "Build farm, written in Factor"
         "10 platforms"
         "Builds Factor and all libraries, runs tests, makes binaries"
-        "Good for increasing stability"
     }
     { $slide "Community"
         "#concatenative irc.freenode.net: 60-70 users"

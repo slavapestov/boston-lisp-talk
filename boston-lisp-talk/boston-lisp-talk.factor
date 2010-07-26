@@ -2,7 +2,7 @@
 ! See http://factorcode.org/license.txt for BSD license.
 USING: slides help.markup math math.private kernel sequences
 slots.private see help help.topics combinators generalizations
-help.vocabs formatting ;
+help.vocabs formatting help.syntax dice ;
 IN: boston-lisp-talk
 
 CONSTANT: boston-lisp-slides
@@ -16,7 +16,12 @@ CONSTANT: boston-lisp-slides
         "Interactive development"
     }
 
-    { $slide "Part 1 - language overview" }
+    { $slide "Part 1 - language overview"
+        "Data types"
+        "Data flow"
+        "Control flow"
+        "Code organization"
+    }
 
     { $slide "Example"
         { $code
@@ -92,7 +97,13 @@ CONSTANT: boston-lisp-slides
     { $slide "Code is data"
         { "A stack program is a list of literals and words (functions). Literals are pushed on the stack, words are executed" }
         {
-            { "Use " { $link see } " to look at definitions" }
+            "Words are defined with special syntax"
+            { $code
+                ": mean ( seq -- n ) dup sum swap length / ;"
+            }
+        }
+        {
+            { "Use " { $link see } " to look at word definitions" }
             { $code "\\ sq see" }
         }
         {
@@ -125,12 +136,10 @@ CONSTANT: boston-lisp-slides
             { $code "[ . ] 3 napply" }
         }
     }
-    { $slide "Lexical variables"
-        "TODO"
-    }
-    { $slide "Stack shuffling"
+    { $slide "Lexical variables, stack shuffling"
         "Lower-level Forth/PostScript-style dataflow"
         { "Other than " { $link dup } " and " { $link drop } ", use is discouraged" }
+        { "Lexical closures supported, see " { $vocab-link "locals" } }
     }
     { $slide "Control flow"
         "Combinators (higher order functions)"
@@ -151,15 +160,21 @@ CONSTANT: boston-lisp-slides
             }
         }
     }
-    { $slide "Using a vocabulary"
-        { "Each file starts with a " { $snippet "USING:" } " list and an " { $snippet "IN:" } " form" }
-        "To use a vocabulary, include it in this list"
-        { "The " { $link about } " word gives an overview of a vocabulary"
-            { $code "\"io.monitors\" about" }
-        }
+
+    { $slide "Part 2 - the environment"
+        "Exploring code"
+        "Reloading code"
+        "Changing code and data"
     }
 
-    { $slide "Part 2 - the environment" }
+    { $slide "Exploring code"
+        { "Listing words in a vocabulary:"
+            { $code "\"io.monitors\" about" }
+        }
+        { "Cross-referencing:"
+            { $code "\\ exists? usage." }
+        }
+    }
 
     { $slide "Interactive development"
         "Programming is hard"
@@ -171,28 +186,23 @@ CONSTANT: boston-lisp-slides
         "In most dynamic languages, loading a source file == copy and paste into REPL"
         "This is wrong!"
         "Removing definitions from a source file and reloading it should remove them from the image"
-        { $code "USE: acme.frobnicate" }
+        { $vocab-link "acme.frobnicate" }
     }
     { $slide "Compiler errors"
-        { "First vocabulary defines a word:" { $code "USE: acme.widgets.supply" } }
-        { "Second vocabulary uses above word:" { $code "USE: acme.widgets.factory" } }
+        { "First vocabulary defines a word:" { $vocab-link "acme.widgets.supply" } }
+        { "Second vocabulary uses above word:" { $vocab-link "acme.widgets.factory" } }
         { "If I add or a parameter, the compiler tells me to update code" }
     }
-    { $slide "Macros"
-        { "Macros can be used for compile-time evaluation, or variable-arity words" }
-        { "Number of inputs and outputs can depend on a literal input parameter" }
-        { "Examples: " { $link printf } ", " { $link ndrop } }
-    }
     { $slide "Inlining and recompilation"
-        { "First vocabulary with a couple of constants:" { $code "USE: planet.earth.constants" } }
-        { "Second vocabulary uses these constants:" { $code "USE: planet.earth.physics" } }
+        { "First vocabulary with a couple of constants:" { $vocab-link "planet.earth.constants" } }
+        { "Second vocabulary uses these constants:" { $vocab-link "planet.earth.physics" } }
         {
             "Constant folding across source file boundaries!"
             { $code "\\ earth-density ssa." }
         }
     }
     { $slide "Tuple reshaping"
-        { "Vocabulary defines a data type:" { $code "USE: planet.data" } }
+        { "Vocabulary defines a data type:" { $vocab-link "planet.data" } }
         {
             { "Let's make an instance of this type" }
             { $code
@@ -206,47 +216,132 @@ CONSTANT: boston-lisp-slides
         { "Adding, re-arranging, removing slots updates instances" }
     }
 
-    { $slide "Part 3 - meta-programming" }
-    
-    { $slide "Part 4 - low-level features" }
+    { $slide "Part 3 - meta-programming"
+        "Macro words"
+        "Parsing words"
+        "Examples"
+    }
 
-    { $slide "Part 5 - the implementation" }
+    { $slide "Macro words"
+        { "Macros can be used for compile-time evaluation, or variable-arity words" }
+        { "Number of inputs and outputs can depend on a literal input parameter" }
+        { "Examples: " { $link printf } ", " { $link ndrop } }
+    }
+
+    { $slide "Parsing words"
+        { "New words are defined with " { $link POSTPONE: : } }
+        "This is “just” a library word"
+        "Only real syntax is whitespace-separated words and numbers"
+        { "Parsing word example:" { $link POSTPONE: DICE: } }
+        { "Usage:"
+            { $code
+                "USE: dice.examples"
+                "standard-dice-roll ."
+            }
+        }
+        { "Demonstrates extensibility of " { $link see } }
+    }
+
+    { $slide "Help system"
+        {
+            "Let's document the dice vocabulary:"
+            { $code
+                "\"dice\" scaffold-help"
+            }
+        }
+        {
+            "Help system is built in Factor:"
+            { $list
+                { $link POSTPONE: HELP: } " parsing word"
+                "Markup language: symbols and nested arrays"
+            }
+        }
+    }
+
+    { $slide "Parsing and printing"
+        { "Parsing s-expressions with PEGs:"
+            { $vocab-link "s-exp.parser" }
+        }
+        { "Converting s-expressions to XML with XML literals:"
+            { $vocab-link "s-exp.to-xml" }
+        }
+        { "Example:"
+            { $code
+                "\"(when (< stock-price 100) (buy shares))\""
+                "parse-s-exp s-exp>xml pprint-xml"
+            }
+        }
+    }
+
+    { $slide "Part 4 - low-level features"
+        "C library interface"
+        "Packed binary data"
+    }
+    
+    { $slide "C library interface"
+        "Supports structs, function pointers, callbacks"
+        {
+            "Very simple example:"
+            { $code
+                "FUNCTION: int getuid ( ) ;"
+                "getuid ."
+            }
+        }
+        "All I/O and user interface stuff done via FFI, rather than VM primitives"
+        "Cocoa, Fortran, COM FFIs are built on top"
+    }
+
+    { $slide "Specialized arrays"
+        
+    }
+
+    { $slide "SIMD"
+        
+    }
+
+    { $slide "Part 5 - the implementation"
+        "VM"
+        "Compiler"
+        "Library"
+    }
 
     { $slide "The VM"
-        "Lowest level is the VM: ~12,000 lines of C"
-        "Generational garbage collection"
-        "Non-optimizing compiler"
+        "Lowest level is the VM: ~16,000 lines of C++"
+        "Generational mark-compact garbage collection"
         "Loads an image file and runs it"
-        "Initial image generated from another Factor instance:"
-        { $code "\"x86.32\" make-image" }
+    }
+    { $slide "Native code compilation"
+        { "Base compiler for listener interactions, and bootstrap"
+            { $list
+                "Glues together chunks of machine code"
+                "Most words compiled as calls, some primitives inlined"
+            }
+        }
+        { "Optimizing compiler for word definitions"
+            { $list
+                "Static stack effects map Factor code to SSA form"
+                "Makes high-level language features cheap to use"
+            }
+        }
+    }
+    { $slide "Optimizing compiler"
+        "Optimizes method dispatch (type propagation)"
+        "Optimizes integer overflow checks (range propagation)"
+        "Optimizes memory allocation (escape analysis)"
+        "Optimizes loads/stores (alias analysis)"
+        "Optimizes computations (value numbering)"
     }
     { $slide "The core library"
         "Core library, ~9,000 lines of Factor"
         "Source parser, arrays, strings, math, hashtables, basic I/O, ..."
         "Packaged into boot image because VM doesn't have a parser"
+        { $code "\"x86.32\" make-image" }
     }
     { $slide "The basis library"
         "Basis library, ~80,000 lines of Factor"
         "Bootstrap process loads code from basis, runs compiler, saves image"
         "Loaded by default: optimizing compiler, tools, help system, UI, ..."
         "Optional: HTTP server, XML, database access, ..."
-    }
-    { $slide "Two compilers"
-        "Base compiler for listener interactions, and bootstrap"
-        "Optimizing compiler for word definitions"
-    }
-    { $slide "Base compiler"
-        "Glues together chunks of machine code"
-        "Most words compiled as calls, some primitives inlined"
-    }
-    { $slide "Optimizing compiler"
-        "Static stack effects let us convert Factor code to SSA form"
-        "Makes high-level language features cheap to use"
-        "Eliminate redundant method dispatch by inferring types"
-        "Eliminate redundant integer overflow checks by inferring ranges"
-        "Eliminate redundant memory allocation (escape analysis)"
-        "Eliminate redundant loads/stores (alias analysis)"
-        "Eliminate redundant computations (value numbering)"
     }
     { $slide "Project infrastructure"
         { $url "http://factorcode.org" }

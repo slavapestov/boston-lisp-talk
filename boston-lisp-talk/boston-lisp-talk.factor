@@ -103,11 +103,11 @@ CONSTANT: boston-lisp-slides
         }
         {
             { "Use " { $link see } " to look at word definitions" }
-            { $code "\\ sq see" }
+            { $code "\\ mean see" }
         }
         {
             { "Integrated " { $link help } }
-            { $code "\\ filter help" }
+            { $code "\\ length help" }
         }
     }
     { $slide "Data flow"
@@ -188,6 +188,7 @@ CONSTANT: boston-lisp-slides
         { $vocab-link "acme.frobnicate" }
     }
     { $slide "Compiler errors"
+        "Factor checks stack height at compile time"
         { "First vocabulary defines a word: " { $vocab-link "acme.widgets.supply" } }
         { "Second vocabulary uses above word: " { $vocab-link "acme.widgets.factory" } }
         { "If I add or a parameter, the compiler tells me to update code" }
@@ -359,6 +360,7 @@ CONSTANT: boston-lisp-slides
         "#concatenative irc.freenode.net: 60-70 users"
         "factor-talk@lists.sf.net: 300 subscribers"
         "Factor standard library is the work of 50 people"
+        "People are either just dabbling or using it for casual scripting, no serious commercial use yet"
     }
     { $slide "Questions?"
         { $url "http://factorcode.org" }

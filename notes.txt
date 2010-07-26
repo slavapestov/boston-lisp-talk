@@ -1,0 +1,36 @@
+notes:
+
+USING: io.directories math.functions unicode.case math.ranges fry
+generalizations random planet.earth.physics compiler.cfg.debugger
+planet.data planet.earth.constants tools.scaffold s-exp.parser
+s-exp.to-xml xml.writer alien.syntax alien.c-types specialized-array-example ;
+
+"/Users/slava/bostonlisp/" set-current-directory
+
+- clear listener before every set of examples
+
+-----
+
+stack languages fascinating
+joy introduced higher-order stack programming
+factor was an attempt to explore this paradigm and see what happens
+without any expectations
+since then things have worked out better than expected and I focused
+more on implementation quality and libraries
+
+this code example shows pipeline code
+square brackets define anonymous functions, which we call quotations
+i'll discuss them in a bit
+
+data types are familiar from lisp
+
+tuple classes -- we have other types of classes, but I won't talk about them
+open tuple in the inspector
+clear stack but leave the inspector open, then push it on stack before dataflow
+combinators slide!
+
+vocabularies:
+- talk about 1-1 file name and vocab name mapping
+- vocab roots are sort of like the Unix $PATH variable, or asdf's central-registry
+
+-----

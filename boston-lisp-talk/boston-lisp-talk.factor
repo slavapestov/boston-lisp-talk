@@ -123,15 +123,15 @@ CONSTANT: boston-lisp-slides
     }
     { $slide "Data flow combinators"
         {
-            { { $link cleave } ": applying several quotations to a single value" }
+            { { $link cleave } ": applying multiple quotations to a single value" }
             { $code "{ [ first>> ] [ last>> ] [ age>> ] } cleave" }
         }
         {
-            { { $link spread } ": applying several quotations to several values" }
+            { { $link spread } ": applying multiple quotations to several values" }
             { $code "{ [ 1 head ] [ 1 head ] [ 21 > ] } spread" }
         }
         {
-            { { $link napply } ": applying several quotations to one value" }
+            { { $link napply } ": applying one quotations to multiple values" }
             { $code "[ . ] 3 napply" }
         }
     }
